@@ -3,7 +3,6 @@ import json
 FILE = "questions.json"
 
 
-# -------- LOAD --------
 def load_questions():
     try:
         with open(FILE, "r") as f:
@@ -12,13 +11,11 @@ def load_questions():
         return []
 
 
-# -------- SAVE --------
 def save_questions(questions):
     with open(FILE, "w") as f:
         json.dump(questions, f, indent=4)
 
 
-# -------- ADD QUESTION --------
 def add_question():
     questions = load_questions()
 
@@ -30,7 +27,6 @@ def add_question():
         opt = input(f"Option {i+1}: ")
         options.append(opt)
 
-    # FIXED: store correct option text
     while True:
         try:
             correct_index = int(input("Correct option number (1-4): "))
@@ -54,7 +50,6 @@ def add_question():
     print("✅ Question added!")
 
 
-# -------- START QUIZ --------
 def start_quiz():
     questions = load_questions()
 
@@ -89,7 +84,6 @@ def start_quiz():
     print(f"\n🎯 Final Score: {score}/{len(questions)}")
 
 
-# -------- MENU --------
 def main():
     while True:
         print("\n=== QUIZ SYSTEM ===")
@@ -110,6 +104,5 @@ def main():
             print("Invalid choice!")
 
 
-# -------- RUN --------
 if __name__ == "__main__":
     main()
