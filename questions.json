@@ -1,0 +1,22 @@
+[
+    {
+        "text": "capital city of kazakhstan?",
+        "options": [
+            "ALmaty",
+            "Taraz",
+            "Astana",
+            "Semey"
+        ],
+        "answer": "Astana"
+    },
+    {
+        "text": "8+9?",
+        "options": [
+            "17",
+            "11",
+            "7",
+            "1"
+        ],
+        "answer": "17"
+    }
+]
