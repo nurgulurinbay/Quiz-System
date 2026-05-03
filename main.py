@@ -1,90 +1,127 @@
 import json
+import random
 
 FILE = "questions.json"
 
 
-def load_questions():
-    try:
-        with open(FILE, "r") as f:
-            return json.load(f)
-    except:
-        return []
+class Question:
+    def __init__(self, text, options, answer, topic, difficulty):
+        self.text = text
+        self.options = options
+        self.answer = answer
+        self.topic = topic
+        self.difficulty = difficulty
+
+    def to_dict(self):
+        return {
+            "text": self.text,
+            "options": self.options,
+            "answer": self.answer,
+            "topic": self.topic,
+            "difficulty": self.difficulty
+        }
 
 
-def save_questions(questions):
-    with open(FILE, "w") as f:
-        json.dump(questions, f, indent=4)
+class QuestionBank:
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.questions = self.load()
+
+    def load(self):
+        try:
+            with open(self.file_path, "r") as f:
+                return json.load(f)
+        except:
+            return []
+
+    def save(self):
+        with open(self.file_path, "w") as f:
+            json.dump(self.questions, f, indent=4)
+
+    def add_question(self, question: Question):
+        self.questions.append(question.to_dict())
+        self.save()
+
+    def get_filtered(self, topic, difficulty):
+        return [
+            q for q in self.questions
+            if q["topic"] == topic and q["difficulty"] == difficulty
+        ]
 
 
-def add_question():
-    questions = load_questions()
+class QuizEngine:
+    def __init__(self, bank: QuestionBank):
+        self.bank = bank
 
-    print("\n--- Add New Question ---")
+    def start(self):
+        topic = input("Choose topic: ")
+        difficulty = input("Choose difficulty (easy/medium/hard): ")
+
+        questions = self.bank.get_filtered(topic, difficulty)
+
+        if not questions:
+            print("No questions found for this filter!")
+            return
+
+        random.shuffle(questions)
+
+        score = 0
+
+        for q in questions:
+            print("\n" + q["text"])
+
+            for i, opt in enumerate(q["options"], 1):
+                print(f"{i}. {opt}")
+
+            while True:
+                try:
+                    choice = int(input("Your answer (1-4): "))
+                    if 1 <= choice <= 4:
+                        break
+                except:
+                    pass
+                print("Invalid input!")
+
+            if q["options"][choice - 1] == q["answer"]:
+                print("Correct!")
+                score += 1
+            else:
+                print("Wrong!")
+
+        print(f"\nFinal Score: {score}/{len(questions)}")
+
+
+def add_question_ui(bank: QuestionBank):
+    print("\n--- Add Question ---")
+
     text = input("Question: ")
 
     options = []
     for i in range(4):
-        opt = input(f"Option {i+1}: ")
-        options.append(opt)
+        options.append(input(f"Option {i+1}: "))
 
     while True:
         try:
-            correct_index = int(input("Correct option number (1-4): "))
-            if 1 <= correct_index <= 4:
-                answer = options[correct_index - 1]
+            correct = int(input("Correct option (1-4): "))
+            if 1 <= correct <= 4:
+                answer = options[correct - 1]
                 break
-            else:
-                print("Enter number from 1 to 4!")
         except:
-            print("Invalid input!")
+            pass
 
-    question = {
-        "text": text,
-        "options": options,
-        "answer": answer
-    }
+    topic = input("Topic: ")
+    difficulty = input("Difficulty (easy/medium/hard): ")
 
-    questions.append(question)
-    save_questions(questions)
+    q = Question(text, options, answer, topic, difficulty)
+    bank.add_question(q)
 
-    print("✅ Question added!")
-
-
-def start_quiz():
-    questions = load_questions()
-
-    if not questions:
-        print("⚠ No questions available!")
-        return
-
-    score = 0
-
-    for q in questions:
-        print("\n" + q["text"])
-
-        for i, opt in enumerate(q["options"], 1):
-            print(f"{i}. {opt}")
-
-        while True:
-            try:
-                choice = int(input("Your answer (1-4): "))
-                if 1 <= choice <= 4:
-                    break
-                else:
-                    print("Enter number from 1 to 4!")
-            except:
-                print("Invalid input!")
-
-        if q["options"][choice - 1] == q["answer"]:
-            print("✅ Correct!")
-            score += 1
-        else:
-            print(f"❌ Wrong! Correct answer: {q['answer']}")
-
-    print(f"\n🎯 Final Score: {score}/{len(questions)}")
+    print("Question added!")
 
 
 def main():
+    bank = QuestionBank(FILE)
+    quiz = QuizEngine(bank)
+
     while True:
         print("\n=== QUIZ SYSTEM ===")
         print("1. Start Quiz")
@@ -94,11 +131,10 @@ def main():
         choice = input("Choose: ")
 
         if choice == "1":
-            start_quiz()
+            quiz.start()
         elif choice == "2":
-            add_question()
+            add_question_ui(bank)
         elif choice == "3":
-            print("Goodbye!")
             break
         else:
             print("Invalid choice!")

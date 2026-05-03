@@ -1,22 +1,14 @@
 [
     {
-        "text": "capital city of kazakhstan?",
+        "text": "What is my nationality?",
         "options": [
-            "ALmaty",
-            "Taraz",
-            "Astana",
-            "Semey"
+            "kyrgyz",
+            "uzbek",
+            "tajik",
+            "kazakh"
         ],
-        "answer": "Astana"
-    },
-    {
-        "text": "8+9?",
-        "options": [
-            "17",
-            "11",
-            "7",
-            "1"
-        ],
-        "answer": "17"
+        "answer": "kazakh",
+        "topic": "Nurgulogy",
+        "difficulty": "easy"
     }
 ]
