@@ -10,5 +10,17 @@
         "answer": "kazakh",
         "topic": "Nurgulogy",
         "difficulty": "easy"
+    },
+    {
+        "text": "How many  colors does Kazakhstan's flag have?",
+        "options": [
+            "5",
+            "3",
+            "2",
+            "4"
+        ],
+        "answer": "2",
+        "topic": "Geography",
+        "difficulty": "easy"
     }
 ]
